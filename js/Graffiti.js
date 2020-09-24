@@ -143,12 +143,7 @@
                 break;
             }
         }
-        // obj.oldX = null;
-        // obj.oldY = null;
-        // obj.newX = null;
-        // obj.newY = null;
         ctxType.closePath();
-        console.log(arguments[2]);
     }
 
     return window.Graffiti = Graffiti;
