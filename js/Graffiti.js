@@ -101,6 +101,8 @@
             }
             case 'mouseup': {
                 this.dataset.toggle = false;
+                objEvent.newX = ev.clientX;
+                objEvent.newY = ev.clientY;
                 let bgCtx = Graffiti.canvas.getContext('2d');
                 ctx.clearRect(0, 0, this.width, this.height);
                 bgCtx.strokeStyle = 'red'
@@ -141,6 +143,12 @@
                 break;
             }
         }
+        // obj.oldX = null;
+        // obj.oldY = null;
+        // obj.newX = null;
+        // obj.newY = null;
+        ctxType.closePath();
+        console.log(arguments[2]);
     }
 
     return window.Graffiti = Graffiti;
