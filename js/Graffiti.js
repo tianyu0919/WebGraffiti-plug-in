@@ -109,13 +109,19 @@
                     Graffiti.el.appendChild(oText2);
                     oText2.focus();
                     oText2.remove();
-                    
+
+                    // 写字的函数
                     write(oText, bgCtx, {
                         x: objEvent.oldX,
                         y: objEvent.oldY
                     });
                     Graffiti.type = null; // 点击一次，然后关闭字体
                     Graffiti.el.querySelector('span.text').classList.remove('active');
+                }
+                // 如果是画笔工具
+                if (Graffiti.type === 'paint-brush') {
+                    bgCtx.beginPath();
+                    bgCtx.moveTo(objEvent.oldX, objEvent.oldY);
                 }
                 break;
             }
@@ -141,6 +147,7 @@
                 if (Graffiti.type != 'paint-brush' || Graffiti.type != 'text') { // 如果不是画笔，则抬起鼠标之后在后方图上进行绘画。
                     canvasStroke(objEvent, Graffiti.type, bgCtx);
                 }
+                bgCtx.save();
                 break;
             }
             default: {
@@ -152,7 +159,9 @@
 
     // 鼠标按下移动时候的事件。进行绘画
     function canvasStroke(obj, Graffiti, ctxType) {
-        ctxType.beginPath();
+        if (Graffiti != 'paint-brush') { // 如果不是画笔工具的话，则开始新的路径，不然会连接到一起。
+            ctxType.beginPath();
+        }
         switch (Graffiti) {
             case 'line': {
                 // console.log('我要画线了');
@@ -175,8 +184,8 @@
             }
             case "paint-brush": {
                 // console.log('我选中的画笔');
-                ctxType.arc(obj.newX, obj.newY, 1, 0, Math.PI * 2, false);
-                ctxType.fill();
+                ctxType.lineTo(obj.newX, obj.newY);
+                ctxType.stroke();
                 break;
             }
             default: {
@@ -184,7 +193,6 @@
                 break;
             }
         }
-        ctxType.closePath();
     }
 
     // 字体写字函数
@@ -197,7 +205,7 @@
             this.remove();
             // let value = this.value.split(/([a-zA-Z0-9]+)/g);
             // console.log(value);
-            ctxType.fillText(this.value, obj.x, obj.y +8);
+            ctxType.fillText(this.value, obj.x, obj.y + 8);
         })
         // dom.remove();
     }
