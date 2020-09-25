@@ -195,9 +195,9 @@
     function write(dom, ctxType, obj) {
         dom.addEventListener('blur', function (ev) {
             this.remove();
-            let value = this.value.split(/([a-zA-Z0-9]+)/g);
-            console.log(value);
-            ctxType.fillText(value, obj.x, obj.y);
+            // let value = this.value.split(/([a-zA-Z0-9]+)/g);
+            // console.log(value);
+            ctxType.fillText(this.value, obj.x, obj.y +8);
         })
         // dom.remove();
     }
