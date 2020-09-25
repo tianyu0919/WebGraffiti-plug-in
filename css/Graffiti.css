@@ -79,3 +79,13 @@
     background-image: url(../img/ellipse.png);
     background-repeat: no-repeat;
 }
+
+.GraffitiBox .hold-all span.paint-brush {
+    background-image: url(../img/paint-brush.png);
+    background-repeat: no-repeat;
+}
+
+.GraffitiBox .hold-all span.text {
+    background-image: url(../img/text.png);
+    background-repeat: no-repeat;
+}
