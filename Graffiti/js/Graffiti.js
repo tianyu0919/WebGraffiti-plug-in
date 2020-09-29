@@ -77,18 +77,21 @@
             holdAllBox.addEventListener('click', holdBoxEventLoop, false);
             ParentBox.appendChild(holdAllBox);
         },
-        save() {
+        async save() {
             try {
-                let base64Img = this.canvas.toDataURL('image/png', 1);
-                this.canvas.setAttribute('crossOrigin', 'anonymous');
-                let aLink = document.createElement('a');
-                aLink.setAttribute('href', base64Img);
-                aLink.download = '保存的图片！';
-                aLink.click();
-                this.options.success({
-                    msg: '保存成功',
-                    base64: base64Img
-                });
+                let file = await getImgFile(this.canvas);
+
+                console.log(file);
+                // let base64Img = this.canvas.toDataURL('image/png', 1);
+                // this.canvas.setAttribute('crossOrigin', 'anonymous');
+                // let aLink = document.createElement('a');
+                // aLink.setAttribute('href', base64Img);
+                // aLink.download = '保存的图片！';
+                // aLink.click();
+                // this.options.success({
+                //     msg: '保存成功',
+                //     base64: base64Img
+                // });
             } catch (error) {
                 this.options.error(error);
             }
@@ -259,6 +262,33 @@
             ctxType.fillText(this.value, obj.x, obj.y + 8);
         })
         // dom.remove();
+    }
+
+    /**
+     * 转换图像格式，将Image转换为File文件
+     * @param {Element} imgElement Image文件
+     * @param {String} Suffix 后缀名
+     */
+    async function getImgFile(imgElement, Suffix = "jpeg") {
+        let p = await new Promise((resolve, reject) => {
+            var blob = null;
+            blob = imgElement.toDataURL('image/jpeg', 1);
+
+            let arr = blob.split(','); // 分隔base64拿到图像基本信息，和图像流文件
+            let mime = arr[0].match(/:(.*?);/)[1]; // 正则表达式
+            let suffix = mime.split('/')[1]; // 拿到最后的后缀名
+            let bstr = atob(arr[1]); // 转换流文件
+            let n = bstr.length; // 获取总长度
+            let u8arr = new Uint8Array(n); // 进行转换
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n); // 进行转换
+            }
+
+            resolve(new File([u8arr], `名字随便起的.${suffix}`, {
+                type: mime
+            }))
+        });
+        return await p;
     }
 
     return window.Graffiti = Graffiti;
