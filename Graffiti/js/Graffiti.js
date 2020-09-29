@@ -55,7 +55,13 @@
                         // let newImg = new Image();
                         // newImg.setAttribute('src',options.img.src);
                         // newImg.setAttribute('crossOrigin', 'anonymous');
-                        bgCtx.drawImage(options.img, 0, 0, w, h);
+                        let src = options.img.getAttribute('src');
+                        if (src.includes("http")) {
+                            options.img.setAttribute('crossOrigin', 'anonymous');
+                        }
+                        setTimeout(() => {
+                            bgCtx.drawImage(options.img, 0, 0, w, h);
+                        }, 100)
                     }
                 });
             })();
@@ -74,6 +80,7 @@
         save() {
             try {
                 let base64Img = this.canvas.toDataURL('image/png', 1);
+                this.canvas.setAttribute('crossOrigin', 'anonymous');
                 let aLink = document.createElement('a');
                 aLink.setAttribute('href', base64Img);
                 aLink.download = '保存的图片！';
