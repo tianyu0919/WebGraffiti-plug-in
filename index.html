@@ -8,27 +8,100 @@
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
     <meta name="Author" content="归宿" />
     <meta name="Keywords" content="关键字" />
-    <script src="./js/Graffiti.js"></script>
-    <link href="./css/Graffiti.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="./Graffiti/js/Graffiti.js"></script>
+    <link href="./Graffiti/css/Graffiti.css" rel="stylesheet" type="text/css" />
     <title>网页标题</title>
     <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
         body {
             height: 100vh;
             width: 100vw;
-            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        ul,
+        li {
+            list-style: none;
+
+        }
+
+        li {
+            width: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0px;
+        }
+
+        li img {
+            max-height: 500px;
+            max-width: 500px;
+        }
+
+        .layerBox {
+            width: 600px;
+            height: 600px;
+            border: 1px solid #ccc;
+            animation: layerOpen .3s linear;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            background-color: #fff;
+            transform: translate(-50%, -50%);
+            box-shadow: 0px 0px 60px rgba(0, 0, 0, .4);
+        }
+
+        @keyframes layerOpen {
+            0% {
+                transform: translate(-50%, -50%) scale(.5);
+            }
+
+            75% {
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
         }
     </style>
 </head>
 
 <body>
-    <!-- 创建一个盒子，类名/ID随便 -->
-    <div class="GraffitiBox">
-    </div>
+    <ul>
+        <li><img src="./img/pexels-anna-tarazevich-4985457.jpg" alt=""></li>
+        <li><img src="./img/pexels-dih-andréa-4289835.jpg" alt=""></li>
+        <li><img src="./img/pexels-flora-westbrook-3755273.jpg" alt=""></li>
+        <li><img src="./img/pexels-khoa-võ-4958609.jpg" alt=""></li>
+    </ul>
 </body>
-
 <script>
-    let canvasBox = document.querySelector(".canvasBox");
-    Graffiti.render('.GraffitiBox'); // 渲染。
+
+    let aImg = document.querySelectorAll('img');
+    aImg.forEach(v => {
+        v.addEventListener('click', ev => {
+            // 弹窗
+            let oDiv = document.createElement('div');
+            oDiv.className = 'layerBox GraffitiBox';
+            document.body.appendChild(oDiv);
+
+            // 渲染
+            Graffiti.render({
+                el: oDiv, // 渲染的盒子
+                img: v, // 传入的img
+                success: function (data) { // 成功后的回调。可以在这里写关闭弹窗等操作
+                    console.log(data);
+                }, error: function (err) { // 失败后的回调。
+                    console.log(err);
+                }
+            });
+        })
+    })
 </script>
 
 </html>
