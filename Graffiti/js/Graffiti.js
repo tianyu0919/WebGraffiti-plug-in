@@ -79,7 +79,8 @@
                 aLink.download = '保存的图片！';
                 aLink.click();
                 this.options.success({
-                    msg: '保存成功'
+                    msg: '保存成功',
+                    base64: base64Img
                 });
             } catch (error) {
                 this.options.error(error);
