@@ -103,3 +103,13 @@
     background-image: url(../img/text.png);
     background-repeat: no-repeat;
 }
+
+.GraffitiBox .hold-all span.rotateLeft {
+    background-image: url(../img/rotate-left.png);
+    background-repeat: no-repeat;
+}
+
+.GraffitiBox .hold-all span.rotateRight {
+    background-image: url(../img/rotate-right.png);
+    background-repeat: no-repeat;
+}

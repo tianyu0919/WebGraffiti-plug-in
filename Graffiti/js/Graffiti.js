@@ -44,10 +44,10 @@
                     //     v.style.width = tempW + 'px';
                     //     v.style.height = tempH + 'px';
                     // } else {
-                    v.width = w;
-                    v.height = h;
-                    v.style.width = w + 'px';
-                    v.style.height = h + 'px';
+                    v.width = w + 40;
+                    v.height = h + 40;
+                    v.style.width = w + 40 + 'px';
+                    v.style.height = h + 40 + 'px';
                     // }
                     if (v.id === 'bgCanvas') {
                         let bgCtx = v.getContext('2d');
@@ -60,7 +60,7 @@
                             options.img.setAttribute('crossOrigin', 'anonymous');
                         }
                         setTimeout(() => {
-                            bgCtx.drawImage(options.img, 0, 0, w, h);
+                            bgCtx.drawImage(options.img, 20, 20, w, h);
                         }, 100)
                     }
                 });
@@ -68,7 +68,9 @@
 
             let holdAllBox = document.createElement('div');
             holdAllBox.classList.add('hold-all');
-            holdAllBox.innerHTML = `<span class='line' title='线条' data-type='line'></span>
+            holdAllBox.innerHTML = `<span class='rotate rotateLeft' title='向左旋转' data-type='rotate-left'></span>
+                                    <span class='rotate rotateRight' title='向右旋转' data-type='rotate-right'></span>
+                                    <span class='line' title='线条' data-type='line'></span>
                                     <span class='rect' title='矩形' data-type='rect'></span>
                                     <span class='ellipse' title='椭圆' data-type='ellipse'></span>
                                     <span class='paint-brush' title='画笔' data-type='paint-brush'></span>
@@ -77,7 +79,7 @@
             holdAllBox.addEventListener('click', holdBoxEventLoop, false);
             ParentBox.appendChild(holdAllBox);
         },
-        async save() {
+        async save() { // 保存
             try {
                 let file = await getImgFile(this.canvas);
 
@@ -102,16 +104,29 @@
     function holdBoxEventLoop(ev) {
         if (ev.target.tagName === 'SPAN') {
             let _this = ev.target;
+            Graffiti.type = _this.dataset.type;
             if (_this.classList.contains('active')) {
                 _this.classList.toggle('active');
             } else {
                 removeClass(_this.parentNode, 'span', 'active');
-                _this.classList.add('active');
-            }
-            if (_this.classList.contains('active')) {
-                Graffiti.type = _this.dataset.type;
-            } else {
-                Graffiti.type = null;
+                if (!_this.classList.contains('rotate')) {
+                    _this.classList.add('active');
+                } else {
+                    let canvasBox = _this.parentElement.previousElementSibling;
+                    let alreadyRotate = canvasBox.style.transform;
+                    let type = _this.dataset.type;
+                    if (!alreadyRotate) {
+                        alreadyRotate = 0;
+                    } else {
+                        alreadyRotate = parseInt(alreadyRotate.split('(')[1].split('deg)')[0]);
+                    }
+                    if (type === 'rotate-left') { // 向左
+                        alreadyRotate -= 90;
+                    } else { // 向右
+                        alreadyRotate += 90;
+                    }
+                    canvasBox.style = `transform:rotate(${alreadyRotate}deg)`;
+                }
             }
             if (_this.dataset.type === 'save') {
                 Graffiti.save();
@@ -216,6 +231,7 @@
         if (Graffiti != 'paint-brush') { // 如果不是画笔工具的话，则开始新的路径，不然会连接到一起。
             ctxType.beginPath();
         }
+        console.log(Graffiti);
         switch (Graffiti) {
             case 'line': {
                 // console.log('我要画线了');
@@ -269,8 +285,8 @@
      * @param {Element} imgElement Image文件
      * @param {String} Suffix 后缀名
      */
-    async function getImgFile(imgElement, Suffix = "jpeg") {
-        let p = await new Promise((resolve, reject) => {
+    function getImgFile(imgElement, Suffix = "jpeg") {
+        let p = new Promise((resolve, reject) => {
             var blob = null;
             blob = imgElement.toDataURL('image/jpeg', 1);
 
@@ -288,7 +304,7 @@
                 type: mime
             }))
         });
-        return await p;
+        return p;
     }
 
     return window.Graffiti = Graffiti;
